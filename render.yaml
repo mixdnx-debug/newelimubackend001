@@ -15,6 +15,8 @@ services:
         sync: false          # set this in the Render dashboard (Environment → Add Environment Variable)
       - key: NODE_ENV
         value: production
+      - key: DATABASE_URL
+        sync: false          # Neon PostgreSQL connection string — set in the Render dashboard (Environment → Add Environment Variable)
       - key: CLIENT_URL
         sync: false          # set to your Netlify URL, e.g. https://elimumaterial.netlify.app
       # ---- KCB Buni M-PESA STK Push ----
