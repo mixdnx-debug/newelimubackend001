@@ -1,0 +1,40 @@
+# Optional: one-click deploy blueprint for Render.
+# You can also create the service manually in the dashboard — see DEPLOYMENT.md.
+# NOTE: secrets are generated, never hard-coded here.
+services:
+  - type: web
+    name: elimumaterial-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false          # set this in the Render dashboard (Environment → Add Environment Variable)
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_URL
+        sync: false          # set to your Netlify URL, e.g. https://elimumaterial.netlify.app
+      # ---- KCB Buni M-PESA STK Push ----
+      - key: KCB_ENV
+        value: production
+      - key: KCB_BASE_URL
+        value: https://api.buni.kcbgroup.com
+      - key: KCB_TOKEN_ENDPOINT
+        value: https://api.buni.kcbgroup.com/token
+      - key: KCB_CONSUMER_KEY
+        sync: false          # set in the Render dashboard
+      - key: KCB_CONSUMER_SECRET
+        sync: false          # set in the Render dashboard
+      - key: KCB_CALLBACK_URL
+        sync: false          # e.g. https://your-backend.onrender.com/callback
+      - key: KCB_SHORTCODE
+        sync: false          # your KCB Till / Paybill number
+      - key: KCB_TILL
+        sync: false          # your KCB Till number
+      - key: KCB_STK_ENDPOINT
+        value: https://api.buni.kcbgroup.com/mm/api/request/1.0.0/stkpush
+      - key: COURSE_UNLOCK_PRICE
+        value: "3"

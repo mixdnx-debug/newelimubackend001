@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin Panel — ELIMUmaterial</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --primary:#1e3a8a; --primary-2:#3b82f6; --accent:#f59e0b; --accent-2:#10b981;
+  --danger:#ef4444; --bg:#0b1120; --bg-2:#111c33; --surface:#ffffff; --surface-2:#f1f5f9;
+  --text:#0f172a; --text-muted:#64748b; --border:#e2e8f0;
+  --grad:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 50%,#8b5cf6 100%);
+  --grad-2:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%);
+  --grad-3:linear-gradient(135deg,#10b981 0%,#059669 100%);
+  --shadow:0 10px 30px -12px rgba(30,58,138,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;background:var(--surface-2);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased}
+button{cursor:pointer;font-family:inherit}
+a{text-decoration:none}
+
+/* ================= ANIMATED BACKGROUND ================= */
+.animated-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--grad)}
+.animated-bg::before,.animated-bg::after{content:'';position:absolute;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.15),transparent 60%);animation:float 18s ease-in-out infinite}
+.animated-bg::before{top:-20%;left:-20%}
+.animated-bg::after{bottom:-20%;right:-20%;animation-delay:-9s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,60px) scale(1.1)}}
+
+/* ================= LOGIN GATE ================= */
+.gate{min-height:100vh;display:grid;place-items:center;padding:40px 20px}
+.gate-card{background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-radius:24px;padding:44px 40px;box-shadow:0 40px 80px -20px rgba(2,6,23,.5);width:100%;max-width:440px;animation:zoomIn .55s cubic-bezier(.22,1,.36,1) both;border:1px solid rgba(255,255,255,.6)}
+@keyframes zoomIn{from{opacity:0;transform:scale(.92) translateY(14px)}to{opacity:1;transform:none}}
+.gate-logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:26px;font-weight:800;font-size:1.35rem;color:var(--primary)}
+.gate-mark{width:46px;height:46px;border-radius:14px;background:var(--grad-2);display:grid;place-items:center;color:#fff;font-size:1.25rem;box-shadow:0 12px 24px -8px rgba(239,68,68,.5);animation:pulseGlow 2.6s ease-in-out infinite}
+@keyframes pulseGlow{0%,100%{box-shadow:0 12px 24px -8px rgba(239,68,68,.5)}50%{box-shadow:0 12px 34px -6px rgba(239,68,68,.75)}}
+.gate-title{font-size:1.65rem;font-weight:800;color:var(--primary);text-align:center}
+.gate-sub{color:var(--text-muted);text-align:center;margin:6px 0 26px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-weight:600;font-size:.9rem;margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.95rem;font-family:inherit;background:#fff;transition:border-color .15s,box-shadow .15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--primary-2);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:44px}
+.pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);font-size:1rem}
+.pw-eye:hover{color:var(--primary)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border:none;border-radius:10px;font-weight:600;font-size:.95rem;transition:transform .15s,box-shadow .2s,background .2s;text-decoration:none}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:var(--shadow)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 15px 30px -10px rgba(59,130,246,.5)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{background:#dc2626}
+.btn-outline{background:transparent;color:var(--primary);border:2px solid var(--primary)}
+.btn-outline:hover{background:var(--primary);color:#fff}
+.btn-block{width:100%;justify-content:center}
+.btn-sm{padding:7px 13px;font-size:.82rem;border-radius:8px}
+.gate-card .btn-primary{margin-top:6px}
+.denied{display:flex;gap:10px;align-items:flex-start;background:#fee2e2;border:1px solid #fecaca;border-left:4px solid #dc2626;color:#7f1d1d;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:.9rem;animation:adIn .3s ease}
+.denied i{color:#dc2626;font-size:1.1rem;margin-top:2px}
+.denied .t{font-weight:800;color:#b91c1c;margin-bottom:2px}
+@keyframes adIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.gate-card.shake{animation:shake .45s cubic-bezier(.36,.07,.19,.97) both}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-6px)}40%,60%{transform:translateX(6px)}}
+.gate-foot{text-align:center;margin-top:18px;color:var(--text-muted);font-size:.85rem}
+.gate-foot a{color:var(--primary-2)}
+
+/* ================= PANEL SHELL ================= */
+.panel{display:none;min-height:100vh}
+.panel.on{display:flex;animation:panelIn .45s ease both}
+@keyframes panelIn{from{opacity:0}to{opacity:1}}
+.sidebar{width:264px;background:linear-gradient(180deg,#0b1120 0%,#111c33 100%);color:#fff;padding:26px 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;box-shadow:4px 0 24px rgba(0,0,0,.25);z-index:10}
+.side-logo{padding:0 22px 24px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:18px;display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.2rem}
+.side-logo .mk{width:42px;height:42px;border-radius:13px;background:var(--grad-2);display:grid;place-items:center;color:#fff;box-shadow:0 10px 22px -8px rgba(239,68,68,.55)}
+.side-menu{flex:1;overflow-y:auto;padding:0 12px}
+.side-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;color:rgba(255,255,255,.72);font-weight:500;margin-bottom:5px;cursor:pointer;transition:.18s;border:none;background:none;width:100%;text-align:left;font-size:.95rem;font-family:inherit;position:relative}
+.side-item i{width:22px;text-align:center;transition:transform .18s}
+.side-item:hover{background:rgba(255,255,255,.08);color:#fff;transform:translateX(4px)}
+.side-item:hover i{transform:scale(1.12)}
+.side-item.active{background:var(--grad);color:#fff;box-shadow:0 6px 18px rgba(59,130,246,.45)}
+.side-item.active::before{content:'';position:absolute;left:-12px;top:20%;bottom:20%;width:4px;border-radius:4px;background:var(--accent)}
+.side-foot{padding:16px 22px;border-top:1px solid rgba(255,255,255,.08);font-size:.8rem;color:rgba(255,255,255,.5)}
+.main{flex:1;padding:28px;overflow-x:hidden;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-radius:16px;padding:14px 22px;margin-bottom:24px;box-shadow:0 6px 24px rgba(30,58,138,.08);animation:fadeUp .5s ease both}
+.topbar h2{font-size:1.08rem;color:var(--primary)}
+.badge{display:inline-block;padding:4px 11px;border-radius:999px;font-size:.74rem;font-weight:700;letter-spacing:.3px}
+.badge-red{background:#fee2e2;color:#991b1b}
+.badge-blue{background:#dbeafe;color:#1e3a8a}
+.badge-green{background:#d1fae5;color:#065f46}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--grad-2);color:#fff;display:grid;place-items:center;font-weight:800;box-shadow:0 8px 18px -6px rgba(239,68,68,.5)}
+.page-title{font-size:1.65rem;font-weight:800;color:var(--primary);margin-bottom:4px}
+.page-sub{color:var(--text-muted);margin-bottom:22px}
+.tab-view{animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ================= CARDS / STATS ================= */
+.grid{display:grid;gap:20px}
+.grid-4{grid-template-columns:repeat(auto-fill,minmax(215px,1fr))}
+.card{background:var(--surface);border-radius:20px;padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 20px 40px -15px rgba(30,58,138,.3)}
+.stat-card{position:relative;overflow:hidden;animation:fadeUp .5s ease both}
+.stat-card:nth-child(2){animation-delay:.05s}.stat-card:nth-child(3){animation-delay:.1s}
+.stat-card:nth-child(4){animation-delay:.15s}.stat-card:nth-child(5){animation-delay:.2s}
+.stat-card:nth-child(6){animation-delay:.25s}.stat-card:nth-child(7){animation-delay:.3s}
+.stat-card::after{content:'';position:absolute;top:-30px;right:-30px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.12),transparent 70%)}
+.stat-ic{width:50px;height:50px;border-radius:14px;background:var(--grad);display:grid;place-items:center;color:#fff;font-size:1.3rem;margin-bottom:14px;box-shadow:0 10px 20px -8px rgba(59,130,246,.5)}
+.stat-ic.g2{background:var(--grad-2);box-shadow:0 10px 20px -8px rgba(239,68,68,.5)}
+.stat-ic.g3{background:var(--grad-3);box-shadow:0 10px 20px -8px rgba(16,185,129,.5)}
+.stat-num{font-size:2.05rem;font-weight:800;color:var(--primary);line-height:1.1;font-variant-numeric:tabular-nums}
+.stat-lbl{color:var(--text-muted);font-size:.88rem;margin-top:2px}
+.card-title{font-size:1.08rem;font-weight:700;margin-bottom:8px;color:var(--primary)}
+
+/* ================= TABLES ================= */
+.table-wrap{background:var(--surface);border-radius:16px;overflow-x:auto;box-shadow:var(--shadow);animation:fadeUp .4s ease both}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th,td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--border);font-size:.92rem}
+th{background:var(--surface-2);font-weight:600;color:var(--text-muted);text-transform:uppercase;font-size:.76rem;letter-spacing:.5px}
+tbody tr{transition:background .15s}
+tr:hover td{background:var(--surface-2)}
+.unit-badge{background:var(--grad);color:#fff;padding:6px 11px;border-radius:8px;font-weight:700;font-size:.76rem;white-space:nowrap}
+.empty{text-align:center;padding:50px 20px;color:var(--text-muted);background:var(--surface);border-radius:16px}
+.empty i{font-size:3rem;margin-bottom:12px;color:var(--border)}
+
+/* ================= MISC ================= */
+.loader{width:40px;height:40px;border:4px solid rgba(59,130,246,.2);border-top-color:var(--primary-2);border-radius:50%;animation:spin .8s linear infinite;margin:34px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.skel{height:120px;border-radius:20px;background:linear-gradient(100deg,#e8edf5 40%,#f7f9fd 50%,#e8edf5 60%);background-size:200% 100%;animation:shimmer 1.3s infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+.toast{position:fixed;bottom:24px;right:24px;background:#0f172a;color:#fff;padding:14px 20px;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,.3);border-left:4px solid var(--primary-2);transform:translateY(20px);opacity:0;transition:.3s;z-index:1000;font-weight:500;max-width:min(420px,90vw)}
+.toast.show{transform:none;opacity:1}
+.toast-success{border-left-color:#10b981}
+.toast-error{border-left-color:#ef4444}
+.ann-card{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.ann-card h3{margin-bottom:4px;color:var(--primary)}
+.ann-meta{color:var(--text-muted);font-size:.84rem;margin-bottom:8px}
+.progress{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-top:10px;display:none}
+.progress > div{height:100%;width:0;background:var(--grad-3);border-radius:99px;transition:width .25s}
+.mob-toggle{display:none;position:fixed;top:14px;left:14px;z-index:70;background:var(--bg-2);color:#fff;border:none;border-radius:10px;padding:10px 13px;font-size:1.1rem;box-shadow:0 8px 20px rgba(0,0,0,.3)}
+@media (max-width:900px){
+  .mob-toggle{display:block}
+  .sidebar{position:fixed;left:-280px;transition:left .3s cubic-bezier(.22,1,.36,1);z-index:60}
+  .sidebar.open{left:0}
+  .main{padding:70px 16px 24px}
+  .page-title{font-size:1.35rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN GATE ============ -->
+<div id="gateView">
+  <div class="animated-bg"></div>
+  <div class="gate">
+    <div class="gate-card" id="gateCard">
+      <div class="gate-logo">
+        <div class="gate-mark"><i class="fa fa-shield-halved"></i></div>
+        <div>ELIMU<span style="color:var(--accent)">material</span>&nbsp;Admin</div>
+      </div>
+      <h1 class="gate-title">Administrator Access</h1>
+      <p class="gate-sub">Restricted area. Enter the admin password to continue.</p>
+      <div id="gateError" class="denied" style="display:none">
+        <i class="fa fa-circle-exclamation"></i>
+        <div><div class="t">Access Denied</div><div class="m">Incorrect admin password. Please try again.</div></div>
+      </div>
+      <form id="gateForm" autocomplete="off">
+        <div class="form-group">
+          <label>Admin Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="pw" required placeholder="Enter admin password"/>
+            <button type="button" class="pw-eye" id="pwEye" title="Show password"><i class="fa fa-eye"></i></button>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" id="gateBtn"><i class="fa fa-lock-open"></i> Unlock Admin Panel</button>
+      </form>
+      <div class="gate-foot">ELIMUmaterial · System Administration</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADMIN PANEL ============ -->
+<button class="mob-toggle" id="mobToggle"><i class="fa fa-bars"></i></button>
+<div class="panel" id="panelView">
+  <aside class="sidebar" id="sidebar">
+    <div class="side-logo">
+      <div class="mk"><i class="fa fa-shield-halved"></i></div>
+      <div>Admin <span style="color:var(--accent)">Panel</span></div>
+    </div>
+    <nav class="side-menu">
+      <button class="side-item active" data-tab="overview"><i class="fa fa-chart-line"></i> Overview</button>
+      <button class="side-item" data-tab="users"><i class="fa fa-users"></i> Users</button>
+      <button class="side-item" data-tab="materials"><i class="fa fa-file-pdf"></i> Materials</button>
+      <button class="side-item" data-tab="upload"><i class="fa fa-upload"></i> Upload PDF</button>
+      <button class="side-item" data-tab="announcements"><i class="fa fa-bullhorn"></i> Announcements</button>
+      <button class="side-item" data-tab="downloads"><i class="fa fa-download"></i> Downloads Log</button>
+      <button class="side-item" data-tab="groups"><i class="fa fa-comments"></i> Study Groups</button>
+      <button class="side-item" data-tab="wallet"><i class="fa fa-wallet"></i> Wallet</button>
+    </nav>
+    <div class="side-foot">
+      <button class="btn btn-danger btn-block btn-sm" id="logoutBtn"><i class="fa fa-right-from-bracket"></i> Logout</button>
+      <div style="margin-top:10px;text-align:center">Admin Session · ELIMUmaterial</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <h2><i class="fa fa-gauge-high" style="color:var(--primary-2);margin-right:8px"></i>System Administration</h2>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="badge badge-red"><i class="fa fa-shield-halved"></i> ADMIN</span>
+        <div class="avatar">A</div>
+      </div>
+    </div>
+
+    <section class="tab-view" data-tab-content="overview">
+      <h1 class="page-title">System Overview</h1>
+      <p class="page-sub">Live statistics for the ELIMUmaterial platform.</p>
+      <div class="grid grid-4" id="statCards"></div>
+    </section>
+
+    <section class="tab-view" data-tab-content="users" style="display:none">
+      <h1 class="page-title">Registered Users</h1>
+      <p class="page-sub">Every account on the platform.</p>
+      <div id="usersTable"></div>
+    </section>
+
+    <section class="tab-view" data-tab-content="materials" style="display:none">
+      <h1 class="page-title">Uploaded Materials</h1>
+      <p class="page-sub">Custom PDFs attached to unit codes.</p>
+      <div id="materialsTable"></div>
+    </section>
+
+    <section class="tab-view" data-tab-content="upload" style="display:none">
+      <h1 class="page-title">Upload New PDF</h1>
+      <p class="page-sub">Attach a real study note or past paper to any unit code.</p>
+      <div class="card" style="max-width:640px">
+        <form id="uploadForm">
+          <div class="form-group"><label>Unit Code (e.g. NUR101, CSC101)</label>
+            <input type="text" id="uUnit" required placeholder="NUR101"/></div>
+          <div class="form-group"><label>Material Title</label>
+            <input type="text" id="uTitle" required placeholder="Complete Study Notes for..."/></div>
+          <div class="form-group"><label>Type</label>
+            <select id="uType"><option value="notes">Study Notes</option><option value="paper">Past Paper</option></select></div>
+          <div class="form-group"><label>PDF File (max 25 MB)</label>
+            <input type="file" id="uFile" accept="application/pdf" required/></div>
+          <div class="progress" id="upProg"><div></div></div>
+          <button class="btn btn-primary btn-block" type="submit" style="margin-top:14px"><i class="fa fa-cloud-arrow-up"></i> Upload</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="tab-view" data-tab-content="announcements" style="display:none">
+      <h1 class="page-title">Announcements</h1>
+      <p class="page-sub">Post platform-wide notices. The newest one shows on every student's dashboard.</p>
+      <div class="card" style="max-width:640px;margin-bottom:20px">
+        <form id="annForm">
+          <div class="form-group"><label>Title</label>
+            <input type="text" id="annTitle" required maxlength="140" placeholder="e.g. Exam timetable released"/></div>
+          <div class="form-group"><label>Body</label>
+            <textarea id="annBody" required rows="4" maxlength="2000" placeholder="Full text of the announcement…"></textarea></div>
+          <button class="btn btn-primary" type="submit"><i class="fa fa-bullhorn"></i> Publish</button>
+        </form>
+      </div>
+      <div id="annList"></div>
+    </section>
+
+    <section class="tab-view" data-tab-content="downloads" style="display:none">
+      <h1 class="page-title">Downloads Log</h1>
+      <p class="page-sub">The 200 most recent file downloads.</p>
+      <div id="downloadsTable"></div>
+    </section>
+
+    <section class="tab-view" data-tab-content="groups" style="display:none">
+      <h1 class="page-title">Study Groups</h1>
+      <p class="page-sub">All student study groups on the platform.</p>
+      <div id="groupsTable"></div>
+    </section>
+
+    <section class="tab-view" data-tab-content="wallet" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <h1 class="page-title">Wallet — M-PESA Transactions</h1>
+          <p class="page-sub">Every KCB STK Push payment: successful, pending, cancelled, timed-out and failed.</p>
+        </div>
+        <button class="btn btn-outline btn-sm" id="walletRefresh"><i class="fa fa-refresh"></i> Refresh</button>
+      </div>
+      <div class="grid grid-4" id="walletSummary" style="margin-bottom:20px"></div>
+      <div id="walletTable"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+/* ELIMUmaterial Admin Panel — served from the backend at /admin.
+   Talks to the SAME ORIGIN API (no external URL needed). */
+(function () {
+  'use strict';
+  const API = location.origin;
+  const token = () => localStorage.getItem('elimu_token');
+  const user  = () => { try { return JSON.parse(localStorage.getItem('elimu_user') || 'null'); } catch { return null; } };
+  const esc = s => String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+
+  function toast(msg, type) {
+    const t = document.createElement('div');
+    t.className = 'toast toast-' + (type || 'info');
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.classList.add('show'), 10);
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3200);
+  }
+
+  async function api(path, options) {
+    options = options || {};
+    const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
+    const t = token();
+    if (t) headers['Authorization'] = 'Bearer ' + t;
+    if (options.body && typeof options.body !== 'string' && !(options.body instanceof FormData))
+      options.body = JSON.stringify(options.body);
+    if (options.body instanceof FormData) delete headers['Content-Type'];
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 60000);
+    let res;
+    try { res = await fetch(API + path, Object.assign({}, options, { headers, signal: ctrl.signal })); }
+    catch (e) {
+      clearTimeout(timer);
+      throw new Error(e.name === 'AbortError'
+        ? 'Server is taking too long (it may be waking from sleep) — please try again in a moment.'
+        : 'Cannot reach the server. Please check your connection.');
+    }
+    clearTimeout(timer);
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 401 && token() && path !== '/api/auth/admin-login') { logout(); throw new Error('Session expired — please sign in again.'); }
+    if (!res.ok) throw new Error(data.error || ('Request failed (' + res.status + ')'));
+    return data;
+  }
+
+  function fileUrl(rel) {
+    if (!rel) return '#';
+    if (rel.startsWith('http')) return rel;
+    if (rel.startsWith('/files/')) return API + rel;
+    return API + '/files/' + rel.replace(/^\//, '');
+  }
+
+  function logout() {
+    localStorage.removeItem('elimu_token');
+    localStorage.removeItem('elimu_user');
+    location.reload();
+  }
+
+  /* ---------- Gate (password) ---------- */
+  const gateView = document.getElementById('gateView');
+  const panelView = document.getElementById('panelView');
+
+  function showPanel() {
+    gateView.style.display = 'none';
+    panelView.classList.add('on');
+    loadStats();
+  }
+
+  // Password visibility toggle
+  document.getElementById('pwEye').addEventListener('click', function () {
+    const i = document.getElementById('pw');
+    const show = i.type === 'password';
+    i.type = show ? 'text' : 'password';
+    this.innerHTML = show ? '<i class="fa fa-eye-slash"></i>' : '<i class="fa fa-eye"></i>';
+  });
+
+  document.getElementById('gateForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('gateBtn');
+    btn.disabled = true; btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Verifying…';
+    try {
+      const data = await api('/api/auth/admin-login', {
+        method: 'POST',
+        body: { password: document.getElementById('pw').value }
+      });
+      localStorage.setItem('elimu_token', data.token);
+      localStorage.setItem('elimu_user', JSON.stringify(data.user));
+      toast('Admin access granted', 'success');
+      showPanel();
+    } catch (err) {
+      const card = document.getElementById('gateCard');
+      const box = document.getElementById('gateError');
+      if (err && !/invalid admin password/i.test(err.message || '')) {
+        box.querySelector('.m').textContent = err.message;
+      }
+      box.style.display = 'flex';
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+      toast(err.message, 'error');
+      btn.disabled = false; btn.innerHTML = '<i class="fa fa-lock-open"></i> Unlock Admin Panel';
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', logout);
+
+  // Mobile sidebar
+  const sidebar = document.getElementById('sidebar');
+  document.getElementById('mobToggle').addEventListener('click', () => sidebar.classList.toggle('open'));
+
+  // If already authenticated as admin, skip the gate
+  const u = user();
+  if (u && u.role === 'admin' && token()) showPanel();
+
+  /* ---------- Tabs ---------- */
+  const tabs = document.querySelectorAll('.side-item');
+  tabs.forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+  function switchTab(t) {
+    tabs.forEach(el => el.classList.toggle('active', el.dataset.tab === t));
+    document.querySelectorAll('[data-tab-content]').forEach(el => {
+      const on = el.dataset.tabContent === t;
+      el.style.display = on ? '' : 'none';
+      if (on) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }
+    });
+    sidebar.classList.remove('open');
+    if (t === 'overview') loadStats();
+    if (t === 'users') loadUsers();
+    if (t === 'materials') loadMaterials();
+    if (t === 'announcements') loadAnnouncements();
+    if (t === 'downloads') loadDownloads();
+    if (t === 'groups') loadGroups();
+    if (t === 'wallet') loadWallet();
+  }
+
+  /* ---------- Count-up animation ---------- */
+  function countUp(el, target) {
+    const dur = 900, t0 = performance.now();
+    function tick(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased).toLocaleString();
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* ---------- Overview ---------- */
+  async function loadStats() {
+    const box = document.getElementById('statCards');
+    box.innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>';
+    try {
+      const s = await api('/api/admin/stats');
+      const cards = [
+        { n: s.users,        l: 'Registered Users', i: 'fa-users',            c: ''   },
+        { n: s.universities, l: 'Universities',     i: 'fa-graduation-cap',   c: 'g2' },
+        { n: s.courses,      l: 'Courses',          i: 'fa-book',             c: 'g3' },
+        { n: s.units,        l: 'Study Units',      i: 'fa-file-pdf',         c: ''   },
+        { n: s.downloads,    l: 'Total Downloads',  i: 'fa-download',         c: 'g2' },
+        { n: s.materials,    l: 'Uploaded PDFs',    i: 'fa-cloud-arrow-up',   c: 'g3' },
+        { n: s.groups,       l: 'Study Groups',     i: 'fa-comments',         c: ''   }
+      ];
+      box.innerHTML = cards.map((c, k) =>
+        '<div class="card stat-card"><div class="stat-ic ' + c.c + '"><i class="fa ' + c.i + '"></i></div>' +
+        '<div class="stat-num" data-n="' + c.n + '">0</div><div class="stat-lbl">' + c.l + '</div></div>'
+      ).join('');
+      box.querySelectorAll('.stat-num').forEach(el => countUp(el, +el.dataset.n || 0));
+    } catch (e) { box.innerHTML = ''; toast(e.message, 'error'); }
+  }
+
+  /* ---------- Users ---------- */
+  async function loadUsers() {
+    const box = document.getElementById('usersTable');
+    box.innerHTML = '<div class="loader"></div>';
+    try {
+      const users = await api('/api/admin/users');
+      box.innerHTML = '<div class="table-wrap"><table>' +
+        '<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Course</th><th>Joined</th><th></th></tr></thead><tbody>' +
+        users.map(u => '<tr>' +
+          '<td>' + esc(u.fullName || '-') + '</td><td>' + esc(u.email) + '</td>' +
+          '<td><span class="badge ' + (u.role === 'admin' ? 'badge-red' : 'badge-blue') + '">' + esc(u.role) + '</span></td>' +
+          '<td>' + esc(u.course || '-') + '</td>' +
+          '<td>' + (u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '-') + '</td>' +
+          '<td>' + (u.role !== 'admin' ? '<button class="btn btn-danger btn-sm" data-del-user="' + esc(u._id) + '"><i class="fa fa-trash"></i></button>' : '') + '</td>' +
+        '</tr>').join('') + '</tbody></table></div>';
+    } catch (e) { box.innerHTML = ''; toast(e.message, 'error'); }
+  }
+
+  /* ---------- Materials ---------- */
+  async function loadMaterials() {
+    const box = document.getElementById('materialsTable');
+    box.innerHTML = '<div class="loader"></div>';
+    try {
+      const m = await api('/api/admin/materials');
+      box.innerHTML = m.length ? '<div class="table-wrap"><table>' +
+        '<thead><tr><th>Unit</th><th>Title</th><th>Type</th><th>Uploaded</th><th></th></tr></thead><tbody>' +
+        m.map(x => '<tr>' +
+          '<td><span class="unit-badge">' + esc(x.unitCode) + '</span></td>' +
+          '<td>' + esc(x.title) + '</td><td>' + esc(x.type) + '</td>' +
+          '<td>' + new Date(x.uploadedAt).toLocaleDateString() + '</td>' +
+          '<td><a class="btn btn-outline btn-sm" href="' + fileUrl(x.filename) + '" target="_blank"><i class="fa fa-eye"></i></a> ' +
+          '<button class="btn btn-danger btn-sm" data-del-mat="' + esc(x._id) + '"><i class="fa fa-trash"></i></button></td>' +
+        '</tr>').join('') + '</tbody></table></div>'
+        : '<div class="empty"><i class="fa fa-file-pdf"></i><div>No custom uploads yet.</div></div>';
+    } catch (e) { box.innerHTML = ''; toast(e.message, 'error'); }
+  }
+
+  /* ---------- Upload ---------- */
+  document.getElementById('uploadForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type=submit]');
+    const prog = document.getElementById('upProg');
+    btn.disabled = true; btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Uploading…';
+    prog.style.display = 'block';
+    const bar = prog.firstElementChild; bar.style.width = '30%';
+    const fd = new FormData();
+    fd.append('unitCode', document.getElementById('uUnit').value.toUpperCase());
+    fd.append('title', document.getElementById('uTitle').value);
+    fd.append('type', document.getElementById('uType').value);
+    fd.append('file', document.getElementById('uFile').files[0]);
+    try {
+      await api('/api/materials/upload', { method: 'POST', body: fd });
+      bar.style.width = '100%';
+      toast('Uploaded!', 'success');
+      e.target.reset();
+      setTimeout(() => { prog.style.display = 'none'; bar.style.width = '0'; }, 600);
+    } catch (err) {
+      prog.style.display = 'none'; bar.style.width = '0';
+      toast(err.message, 'error');
+    }
+    btn.disabled = false; btn.innerHTML = '<i class="fa fa-cloud-arrow-up"></i> Upload';
+  });
+
+  /* ---------- Announcements ---------- */
+  async function loadAnnouncements() {
+    const box = document.getElementById('annList');
+    box.innerHTML = '<div class="loader"></div>';
+    try {
+      const list = await api('/api/announcements');
+      if (!list.length) { box.innerHTML = '<div class="empty"><i class="fa fa-bullhorn"></i><div>No announcements yet.</div></div>'; return; }
+      box.innerHTML = list.map(a =>
+        '<div class="card" style="margin-bottom:12px"><div class="ann-card">' +
+          '<div><h3>' + esc(a.title) + '</h3>' +
+          '<div class="ann-meta">' + new Date(a.createdAt).toLocaleString() + ' · by ' + esc(a.createdBy) + '</div>' +
+          '<div>' + esc(a.body) + '</div></div>' +
+          '<button class="btn btn-danger btn-sm" data-del-ann="' + esc(a._id) + '"><i class="fa fa-trash"></i></button>' +
+        '</div></div>'
+      ).join('');
+    } catch (e) { box.innerHTML = ''; toast(e.message, 'error'); }
+  }
+  document.getElementById('annForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    try {
+      await api('/api/announcements', { method: 'POST', body: {
+        title: document.getElementById('annTitle').value.trim(),
+        body:  document.getElementById('annBody').value.trim()
+      }});
+      toast('Announcement published!', 'success');
+      e.target.reset(); loadAnnouncements();
+    } catch (err) { toast(err.message, 'error'); }
+  });
+
+  /* ---------- Downloads ---------- */
+  async function loadDownloads() {
+    const box = document.getElementById('downloadsTable');
+    box.innerHTML = '<div class="loader"></div>';
+    try {
+      const d = await api('/api/admin/downloads');
+      box.innerHTML = d.length ? '<div class="table-wrap"><table>' +
+        '<thead><tr><th>User</th><th>Unit</th><th>Title</th><th>When</th></tr></thead><tbody>' +
+        d.map(x => '<tr><td>' + esc(String(x.userId).slice(0, 8)) + '…</td>' +
+          '<td><span class="unit-badge">' + esc(x.unitCode) + '</span></td>' +
+          '<td>' + esc(x.title) + '</td>' +
+          '<td>' + new Date(x.downloadedAt).toLocaleString() + '</td></tr>').join('') +
+        '</tbody></table></div>'
+        : '<div class="empty"><i class="fa fa-download"></i><div>No downloads yet.</div></div>';
+    } catch (e) { box.innerHTML = ''; toast(e.message, 'error'); }
+  }
+
+  /* ---------- Groups ---------- */
+  async function loadGroups() {
+    const box = document.getElementById('groupsTable');
+    box.innerHTML = '<div class="loader"></div>';
+    try {
+      const g = await api('/api/groups');
+      box.innerHTML = g.length ? '<div class="table-wrap"><table>' +
+        '<thead><tr><th>Group</th><th>Creator</th><th>Members</th><th>Created</th></tr></thead><tbody>' +
+        g.map(x => '<tr><td>' + esc(x.name) + '</td><td>' + esc(x.createdByName) + '</td>' +
+          '<td><span class="badge badge-green">' + x.members.length + '</span></td>' +
+          '<td>' + new Date(x.createdAt).toLocaleDateString() + '</td></tr>').join('') +
+        '</tbody></table></div>'
+        : '<div class="empty"><i class="fa fa-comments"></i><div>No groups yet.</div></div>';
+    } catch (e) { box.innerHTML = ''; toast(e.message, 'error'); }
+  }
+
+  /* ---------- Wallet (M-PESA transactions) ---------- */
+  function statusBadge(st) {
+    const map = {
+      success:   ['badge-green', 'fa-circle-check', 'SUCCESS'],
+      pending:   ['badge-blue',  'fa-clock',        'PENDING'],
+      initiated: ['badge-blue',  'fa-paper-plane',  'INITIATED'],
+      cancelled: ['badge-red',   'fa-ban',          'CANCELLED'],
+      timeout:   ['badge-red',   'fa-hourglass-end','TIMEOUT'],
+      failed:    ['badge-red',   'fa-circle-xmark', 'FAILED']
+    };
+    const m = map[st] || ['badge-blue', 'fa-circle-question', String(st || 'unknown').toUpperCase()];
+    return '<span class="badge ' + m[0] + '"><i class="fa ' + m[1] + '"></i> ' + m[2] + '</span>';
+  }
+
+  async function loadWallet() {
+    const sumBox = document.getElementById('walletSummary');
+    const tblBox = document.getElementById('walletTable');
+    sumBox.innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>';
+    tblBox.innerHTML = '<div class="loader"></div>';
+    try {
+      const sum = await api('/api/admin/wallet/summary');
+      const cards = [
+        { n: 'KES ' + Number(sum.collected || 0).toLocaleString(), l: 'Collected (Successful)', i: 'fa-sack-dollar', c: 'g3' },
+        { n: sum.success || 0,  l: 'Successful', i: 'fa-circle-check',  c: 'g3' },
+        { n: (sum.pending || 0) + (sum.initiated || 0), l: 'Pending / Awaiting PIN', i: 'fa-clock', c: '' },
+        { n: sum.cancelled || 0, l: 'Cancelled by User', i: 'fa-ban', c: 'g2' },
+        { n: (sum.timeout || 0) + (sum.failed || 0), l: 'Timeout / Failed', i: 'fa-circle-xmark', c: 'g2' },
+        { n: sum.total || 0, l: 'Total Transactions', i: 'fa-receipt', c: '' }
+      ];
+      sumBox.innerHTML = cards.map(c =>
+        '<div class="card stat-card"><div class="stat-ic ' + c.c + '"><i class="fa ' + c.i + '"></i></div>' +
+        '<div class="stat-num" style="font-size:1.5rem">' + c.n + '</div><div class="stat-lbl">' + c.l + '</div></div>'
+      ).join('');
+
+      const tx = await api('/api/admin/wallet');
+      tblBox.innerHTML = tx.length ? '<div class="table-wrap"><table>' +
+        '<thead><tr><th>Status</th><th>Student</th><th>Phone</th><th>Course</th><th>Amount</th><th>M-PESA Receipt</th><th>Reference</th><th>Date</th></tr></thead><tbody>' +
+        tx.map(p => '<tr>' +
+          '<td>' + statusBadge(p.status) + (p.resultDesc && p.status !== 'success' ? '<div style="font-size:.72rem;color:var(--text-muted);margin-top:3px">' + esc(p.resultDesc) + '</div>' : '') + '</td>' +
+          '<td>' + esc(p.userEmail || '-') + '</td>' +
+          '<td>' + esc(p.phone || '-') + '</td>' +
+          '<td>' + esc(p.courseName || p.courseId || '-') + '</td>' +
+          '<td><b>KES ' + Number(p.amount || 0).toFixed(2) + '</b></td>' +
+          '<td>' + (p.mpesaReceipt ? '<span class="badge badge-green">' + esc(p.mpesaReceipt) + '</span>' : '—') + '</td>' +
+          '<td style="font-size:.78rem">' + esc(p.reference || '-') + '</td>' +
+          '<td style="font-size:.82rem">' + new Date(p.createdAt).toLocaleString() + '</td>' +
+        '</tr>').join('') + '</tbody></table></div>'
+        : '<div class="empty"><i class="fa fa-wallet"></i><div>No transactions yet.</div></div>';
+    } catch (e) { sumBox.innerHTML = ''; tblBox.innerHTML = ''; toast(e.message, 'error'); }
+  }
+  document.getElementById('walletRefresh').addEventListener('click', loadWallet);
+
+  /* ---------- Global delete actions (event delegation — no inline handlers) ---------- */
+  document.addEventListener('click', async e => {
+    const du = e.target.closest('[data-del-user]');
+    const dm = e.target.closest('[data-del-mat]');
+    const da = e.target.closest('[data-del-ann]');
+    try {
+      if (du && confirm('Delete this user?')) {
+        await api('/api/admin/users/' + encodeURIComponent(du.dataset.delUser), { method: 'DELETE' });
+        toast('User deleted', 'success'); loadUsers();
+      } else if (dm && confirm('Delete this material?')) {
+        await api('/api/materials/' + encodeURIComponent(dm.dataset.delMat), { method: 'DELETE' });
+        toast('Deleted', 'success'); loadMaterials();
+      } else if (da && confirm('Delete this announcement?')) {
+        await api('/api/announcements/' + encodeURIComponent(da.dataset.delAnn), { method: 'DELETE' });
+        toast('Deleted', 'success'); loadAnnouncements();
+      }
+    } catch (err) { toast(err.message, 'error'); }
+  });
+})();
+</script>
+</body>
+</html>
