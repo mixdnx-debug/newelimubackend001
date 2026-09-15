@@ -1951,4 +1951,16 @@ const chukaCourses = [
   }
 ];
 
-module.exports = { chukaFaculties, chukaCourses };
+// ---------------------------------------------------------------------------
+// Year 1.1–4.2 completion (ADDITIVE): the official Chuka units above are
+// NEVER renamed, renumbered or removed. The expansion module only tags each
+// official unit with year/semester metadata (from its code) and APPENDS
+// further real programme units so every Chuka course covers all eight
+// semesters (1.1 → 4.2) with at least 11 units per semester — matching the
+// master catalog's standard. New codes carry an "X" marker so they can
+// never collide with Chuka's official codes or the master catalog.
+// ---------------------------------------------------------------------------
+const { expandChukaCourses } = require('./yearExpansion');
+const chukaCoursesExpanded = expandChukaCourses(chukaCourses);
+
+module.exports = { chukaFaculties, chukaCourses: chukaCoursesExpanded };

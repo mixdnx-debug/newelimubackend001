@@ -1156,6 +1156,71 @@ const courses = [
       U('PFA107','Music for Performance'),
       U('PFA108','Performing Arts Management')
     ]
+  },
+
+  // ============= ADDITIONAL KUCCPS PROGRAMMES (additive) =============
+  {
+    id: 'beconstat', code: 'BSc-ECS', name: 'Bachelor of Science in Economics & Statistics', facultyId: 'fac-biz', duration: '4 years',
+    units: [
+      U('ECS101','Principles of Economics'), U('ECS102','Introduction to Statistics'),
+      U('ECS103','Mathematics for Economists'), U('ECS104','Descriptive Statistics'),
+      U('ECS105','Probability Theory'), U('ECS106','Microeconomic Analysis'),
+      U('ECS107','Macroeconomic Analysis'), U('ECS108','Statistical Computing')
+    ]
+  },
+  {
+    id: 'bfineng', code: 'BSc-FE', name: 'Bachelor of Science in Financial Engineering', facultyId: 'fac-biz', duration: '4 years',
+    units: [
+      U('FEN101','Financial Mathematics I'), U('FEN102','Principles of Finance'),
+      U('FEN103','Probability Theory'), U('FEN104','Programming for Finance (Python)'),
+      U('FEN105','Microeconomics'), U('FEN106','Financial Accounting'),
+      U('FEN107','Statistics for Finance'), U('FEN108','Business Communication')
+    ]
+  },
+  {
+    id: 'bbiochem', code: 'BSc-Biochem', name: 'Bachelor of Science in Biochemistry', facultyId: 'fac-sci', duration: '4 years',
+    units: [
+      U('BCH101','General Chemistry'), U('BCH102','Cell Biology'),
+      U('BCH103','Biomolecules & Metabolism'), U('BCH104','Enzymology'),
+      U('BCH105','Molecular Biology'), U('BCH106','Analytical Biochemistry'),
+      U('BCH107','Microbiology'), U('BCH108','Biostatistics')
+    ]
+  },
+  {
+    id: 'bforensic', code: 'BSc-Foren', name: 'Bachelor of Science in Forensic Science', facultyId: 'fac-sci', duration: '4 years',
+    units: [
+      U('FSC101','Introduction to Forensic Science'), U('FSC102','Forensic Chemistry'),
+      U('FSC103','Forensic Biology & DNA Analysis'), U('FSC104','Crime Scene Investigation'),
+      U('FSC105','Fingerprint & Impression Evidence'), U('FSC106','Forensic Toxicology'),
+      U('FSC107','Ballistics & Firearms Examination'), U('FSC108','Forensic Document Examination')
+    ]
+  },
+  {
+    id: 'bmechatro', code: 'BMechE', name: 'Bachelor of Science in Mechatronic Engineering', facultyId: 'fac-eng', duration: '5 years',
+    units: [
+      U('MTR101','Engineering Mathematics I'), U('MTR102','Engineering Drawing & CAD'),
+      U('MTR103','Electrical Circuits'), U('MTR104','Digital Logic Design'),
+      U('MTR105','Mechanics & Materials'), U('MTR106','Programming for Engineers (C/Python)'),
+      U('MTR107','Sensors & Actuators'), U('MTR108','Workshop Technology')
+    ]
+  },
+  {
+    id: 'bagribiz', code: 'BSc-Agrib', name: 'Bachelor of Science in Agribusiness Management', facultyId: 'fac-agri', duration: '4 years',
+    units: [
+      U('AGB101','Introduction to Agribusiness'), U('AGB102','Principles of Agricultural Production'),
+      U('AGB103','Principles of Microeconomics'), U('AGB104','Financial Accounting for Agribusiness'),
+      U('AGB105','Agricultural Marketing'), U('AGB106','Farm Business Management'),
+      U('AGB107','Agricultural Value Chains'), U('AGB108','Rural Development & Extension')
+    ]
+  },
+  {
+    id: 'bdisaster', code: 'BSc-DM', name: 'Bachelor of Science in Disaster Management & Mitigation', facultyId: 'fac-env', duration: '4 years',
+    units: [
+      U('DSM101','Introduction to Disaster Management'), U('DSM102','Hazards, Vulnerability & Risk'),
+      U('DSM103','Emergency Planning & Response'), U('DSM104','Humanitarian Logistics'),
+      U('DSM105','Climate Change & Disaster Risk'), U('DSM106','Geographic Information Systems for DRR'),
+      U('DSM107','Public Health in Emergencies'), U('DSM108','Community-Based Disaster Risk Reduction')
+    ]
   }
 ];
 
