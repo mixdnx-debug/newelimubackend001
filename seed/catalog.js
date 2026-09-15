@@ -1159,4 +1159,10 @@ const courses = [
   }
 ];
 
-module.exports = { universities, faculties, courses };
+// ---------------------------------------------------------------------------
+// Year 1.1–4.2 expansion (ADDITIVE): courses are exported through
+// yearExpansion.js, which appends realistic Year 2–4 units and tags every
+// unit with year/semester. The `courses` array above is never mutated.
+// ---------------------------------------------------------------------------
+const { expandCourses } = require('./yearExpansion');
+module.exports = { universities, faculties, courses: expandCourses(courses) };

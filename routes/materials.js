@@ -5,6 +5,9 @@ const multer = require('multer');
 const db = require('../models/db');
 const { auth, adminOnly } = require('../middleware/auth');
 const catalog = require(path.join(__dirname, '..', 'seed', 'catalog.js'));
+// Chuka overlay is searched too, so Chuka-only unit codes resolve to their
+// seed notes/past-paper PDFs exactly like master-catalog units (additive).
+const chukaCatalog = require(path.join(__dirname, '..', 'seed', 'chukaCatalog.js'));
 const { getUnitPages } = require('../utils/pdfPages');
 
 const router = express.Router();
@@ -32,6 +35,14 @@ router.get('/unit/:unitCode', async (req, res) => {
       if (u.code.toUpperCase() === unitCode) unitData = { ...u, courseId: c.id };
     });
   });
+  // Chuka units live in their own overlay — look there as well.
+  if (!unitData) {
+    chukaCatalog.chukaCourses.forEach(c => {
+      c.units.forEach(u => {
+        if (u.code.toUpperCase() === unitCode) unitData = { ...u, courseId: c.id };
+      });
+    });
+  }
 
   const uploaded = await db.materials.find({ unitCode });
   const items = [];
