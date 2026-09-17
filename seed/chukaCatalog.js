@@ -1903,15 +1903,15 @@ const chukaCourses = [
     id: 'chuka-bhrit', code: 'BHRIT', name: 'BSc Health Records and Information Technology',
     facultyId: 'chuka-sch-nur', duration: '4 years',
     units: [
-      U('HRT101','Introduction to Health Records'),
-      U('HRT102','Medical Terminology'),
-      U('HRT103','Human Anatomy & Physiology'),
-      U('HRT104','Communication Skills'),
-      U('HRT105','Introduction to ICT'),
-      U('HRT106','Health Information Systems I'),
-      U('HRT107','Health Statistics I'),
-      U('HRT108','Filing & Records Management'),
-      U('HRT201','Medical Coding & Classification')
+      U('HRI101','Introduction to Health Records'),
+      U('HRI102','Medical Terminology'),
+      U('HRI103','Human Anatomy & Physiology'),
+      U('HRI104','Communication Skills'),
+      U('HRI105','Introduction to ICT'),
+      U('HRI106','Health Information Systems I'),
+      U('HRI107','Health Statistics I'),
+      U('HRI108','Filing & Records Management'),
+      U('HRI201','Medical Coding & Classification')
     ]
   },
 
@@ -1947,6 +1947,117 @@ const chukaCourses = [
       U('LLB402','Alternative Dispute Resolution'),
       U('LLB403','Legal Ethics'),
       U('LLB404','Research Methods & Project')
+    ]
+  },
+
+  // ================= 2B. FACULTY OF BUSINESS STUDIES — 2026 ADDITIONS =================
+  // ADDITIVE ONLY: new official Chuka programmes (verified against
+  // chuka.ac.ke programme listings). Codes use never-before-used prefixes
+  // (ECS / ACT / BBA / ESO) so they cannot collide with any existing unit.
+  {
+    id: 'chuka-bsc-econstat', code: 'BSc-ECS', name: 'BSc Economics & Statistics',
+    facultyId: 'chuka-fac-biz', duration: '4 years',
+    units: [
+      U('ECS101','Principles of Microeconomics'),
+      U('ECS102','Principles of Macroeconomics'),
+      U('ECS103','Mathematics for Economists I'),
+      U('ECS104','Mathematics for Economists II'),
+      U('ECS105','Introduction to Statistics'),
+      U('ECS106','Introduction to Computing & Data Tools'),
+      U('ECS107','Communication Skills'),
+      U('ECS108','Development Studies'),
+      U('ECS201','Intermediate Microeconomic Theory'),
+      U('ECS202','Intermediate Macroeconomic Theory'),
+      U('ECS203','Probability & Distribution Theory'),
+      U('ECS204','Statistical Inference'),
+      U('ECS205','Mathematics for Economists III'),
+      U('ECS206','Econometrics I'),
+      U('ECS207','National Income Accounts & Official Statistics'),
+      U('ECS208','Statistical Computing with R'),
+      U('ECS301','Econometrics II'),
+      U('ECS302','Time Series Analysis'),
+      U('ECS303','Sampling Techniques & Survey Design'),
+      U('ECS304','Public Finance & Fiscal Policy'),
+      U('ECS305','Operations Research'),
+      U('ECS306','Monetary Theory & Policy'),
+      U('ECS307','Research Methods in Economics & Statistics'),
+      U('ECS308','Industrial Attachment'),
+      U('ECS401','Advanced Econometrics'),
+      U('ECS402','Multivariate Statistical Methods'),
+      U('ECS403','Development Economics'),
+      U('ECS404','International Trade & Finance'),
+      U('ECS405','Data Mining & Big Data Analytics'),
+      U('ECS406','Economic Policy Analysis & Forecasting'),
+      U('ECS407','Research Project I (Proposal)'),
+      U('ECS408','Research Project II (Report)')
+    ]
+  },
+  {
+    id: 'chuka-bsc-actsci', code: 'BSc-ACT', name: 'BSc Actuarial Science',
+    facultyId: 'chuka-fac-biz', duration: '4 years',
+    units: [
+      U('ACT101','Principles of Microeconomics'),
+      U('ACT102','Principles of Macroeconomics'),
+      U('ACT103','Calculus I'),
+      U('ACT104','Linear Algebra'),
+      U('ACT105','Introduction to Actuarial Science'),
+      U('ACT106','Principles of Accounting'),
+      U('ACT107','Introduction to Probability'),
+      U('ACT108','Business Communication'),
+      U('ACT201','Financial Mathematics I'),
+      U('ACT202','Financial Mathematics II'),
+      U('ACT203','Probability & Distribution Theory'),
+      U('ACT204','Statistical Inference'),
+      U('ACT205','Economics for Actuaries'),
+      U('ACT206','Survival Models'),
+      U('ACT207','Corporate Finance'),
+      U('ACT208','Risk Theory')
+    ]
+  },
+  {
+    id: 'chuka-bba', code: 'BBA', name: 'Bachelor of Business Administration',
+    facultyId: 'chuka-fac-biz', duration: '4 years',
+    units: [
+      U('BBA101','Introduction to Business'),
+      U('BBA102','Principles of Management'),
+      U('BBA103','Principles of Accounting I'),
+      U('BBA104','Principles of Accounting II'),
+      U('BBA105','Business Mathematics'),
+      U('BBA106','Business Statistics'),
+      U('BBA107','Microeconomics'),
+      U('BBA108','Macroeconomics'),
+      U('BBA201','Marketing Management'),
+      U('BBA202','Human Resource Management'),
+      U('BBA203','Financial Management'),
+      U('BBA204','Operations Management'),
+      U('BBA205','Business Law'),
+      U('BBA206','Organizational Behaviour'),
+      U('BBA207','Management Information Systems'),
+      U('BBA208','Entrepreneurship')
+    ]
+  },
+
+  // ================= 6B. FACULTY OF HUMANITIES & SOCIAL SCIENCES — 2026 ADDITIONS =================
+  {
+    id: 'chuka-ba-ecosoc', code: 'BA-ES', name: 'BA (Economics & Sociology)',
+    facultyId: 'chuka-fac-hum', duration: '4 years',
+    units: [
+      U('ESO101','Principles of Microeconomics'),
+      U('ESO102','Principles of Macroeconomics'),
+      U('ESO103','Introduction to Sociology'),
+      U('ESO104','Social Institutions'),
+      U('ESO105','Communication Skills'),
+      U('ESO106','Mathematics for Social Sciences'),
+      U('ESO107','Statistics for Social Sciences'),
+      U('ESO108','History of Economic Thought'),
+      U('ESO201','Intermediate Microeconomics'),
+      U('ESO202','Intermediate Macroeconomics'),
+      U('ESO203','Sociological Theory I'),
+      U('ESO204','Sociological Theory II'),
+      U('ESO205','Rural Sociology'),
+      U('ESO206','Urban Sociology'),
+      U('ESO207','Development Economics'),
+      U('ESO208','Social Research Methods')
     ]
   }
 ];

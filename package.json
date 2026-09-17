@@ -8,6 +8,8 @@
     "dev": "nodemon server.js",
     "seed": "node seed/seedData.js",
     "generate-pdfs": "node seed/generatePdfs.js",
+    "generate-new-chuka-pdfs": "node seed/generateNewChuka.js",
+    "test": "node test/catalog.test.js",
     "postinstall": "node seed/seedData.js && node seed/generatePdfs.js"
   },
   "dependencies": {
