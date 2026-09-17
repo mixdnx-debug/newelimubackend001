@@ -5,7 +5,14 @@ const db = require('../models/db');
 const { sign, auth } = require('../middleware/auth');
 
 const router = express.Router();
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '11elimu72';
+// No hardcoded fallback: in production the server refuses admin login unless
+// ADMIN_PASSWORD is set in the environment. In development a random one-time
+// password is generated per boot (never guessable, never committed to git).
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || (
+  process.env.NODE_ENV === 'production'
+    ? (console.error('FATAL: ADMIN_PASSWORD env var is not set — admin login disabled.'), null)
+    : require('crypto').randomBytes(24).toString('hex')
+);
 
 // Register
 router.post('/register', async (req, res) => {
@@ -44,7 +51,7 @@ router.post('/login', async (req, res) => {
     if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
     // Admin backdoor via admin password
-    if (email.toLowerCase() === 'admin@elimumaterial.co.ke' && password === ADMIN_PASSWORD) {
+    if (ADMIN_PASSWORD && email.toLowerCase() === 'admin@elimumaterial.co.ke' && password === ADMIN_PASSWORD) {
       let admin = await db.users.findOne({ email: 'admin@elimumaterial.co.ke' });
       if (!admin) {
         admin = await db.users.insert({

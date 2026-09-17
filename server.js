@@ -15,8 +15,11 @@ const PORT = process.env.PORT || 5000;
 // ---------- Security & parsing middleware ----------
 // CORS: allow the deployed Netlify frontend, localhost dev, and any explicit CLIENT_URL.
 const allowed = new Set(
-  ['http://localhost:8080', 'http://127.0.0.1:8080', 'http://localhost:5500', 'http://127.0.0.1:5500']
-    .concat((process.env.CLIENT_URL || '*').split(',').map(s => s.trim()))
+  ['http://localhost:8080', 'http://127.0.0.1:8080', 'http://localhost:5500', 'http://127.0.0.1:5500',
+   'http://localhost:' + PORT, 'http://127.0.0.1:' + PORT,
+   process.env.RENDER_EXTERNAL_URL, process.env.SELF_URL]
+    .concat((process.env.CLIENT_URL || '').split(',').map(s => s.trim()))
+    .filter(Boolean)
 );
 const allowAll = allowed.has('*');
 app.use(cors({
@@ -25,7 +28,9 @@ app.use(cors({
     if (!origin || allowAll || allowed.has(origin)) return cb(null, true);
     // Allow any *.netlify.app subdomain so preview/deploy URLs always work
     if (/^https:\/\/[a-z0-9-]+\.netlify\.app$/i.test(origin)) return cb(null, true);
-    return cb(null, true); // public read-only API — permissive, JWT guards mutations
+    // Custom production domain is explicitly trusted
+    if (/^https:\/\/(www\.)?elimumaterials\.co\.ke$/i.test(origin)) return cb(null, true);
+    return cb(new Error('Origin not allowed'), false); // deny every other browser origin
   },
   credentials: false
 }));
@@ -33,6 +38,10 @@ app.use(cors({
 // Hardened security headers (Helmet-equivalent set, no extra dependency)
 app.disable('x-powered-by');
 app.set('trust proxy', 1); // Render sits behind a proxy — needed for correct rate-limit IPs
+// Admin panel mount path — configurable so the admin surface is NOT served at
+// the obvious default location in production (set ADMIN_PATH in the env, e.g.
+// ADMIN_PATH=mgmt-x7q2 — share it with nobody; default stays /admin locally).
+const ADMIN_PATH = '/' + String(process.env.ADMIN_PATH || 'admin').replace(/^\/+|\/+$/g, '');
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
@@ -45,7 +54,7 @@ app.use((req, res, next) => {
   // The admin panel page (/admin) ships its logic in an inline <script> and loads
   // Font Awesome / Google Fonts from CDNs — give ONLY that page a scoped CSP that
   // permits them. Every other route keeps the strict original policy unchanged.
-  const isAdminPage = req.path === '/admin' || req.path.startsWith('/admin/');
+  const isAdminPage = req.path === ADMIN_PATH || req.path.startsWith(ADMIN_PATH + '/');
   res.setHeader(
     'Content-Security-Policy',
     isAdminPage
@@ -76,9 +85,10 @@ app.use('/files', express.static(path.join(__dirname, 'uploads'), {
   }
 }));
 
-// Admin panel — hosted on the backend's public folder, at /admin
-app.use('/admin', express.static(path.join(__dirname, 'public', 'admin')));
-app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin', 'index.html')));
+// Admin panel — hosted on the backend's public folder, mounted at ADMIN_PATH
+// (default /admin). Set ADMIN_PATH in the environment to relocate/hide it.
+app.use(ADMIN_PATH, express.static(path.join(__dirname, 'public', 'admin')));
+app.get(ADMIN_PATH, (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin', 'index.html')));
 
 // Rate limiter for auth endpoints — tightened against credential stuffing
 const authLimiter = rateLimit({
